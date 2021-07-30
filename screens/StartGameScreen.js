@@ -46,7 +46,7 @@ const StartGameScreen = props => {
         confirmedOutput =
             <Card style={styles.summaryContainer}>
                 <BodyText>You selected</BodyText>
-                <NumberContainer>{selectedNumber}</NumberContainer>
+                <NumberContainer style={styles.numberContainer}>{selectedNumber}</NumberContainer>
                 <MainButton onPress={props.onStartGame.bind(this, selectedNumber)} >START GAME</MainButton>
             </Card>
     }
@@ -92,6 +92,7 @@ const styles = StyleSheet.create({
         width: 300,
         maxWidth: '80%',
         alignItems: 'center',
+        marginTop: 50
     },
     buttonContainer: {
         flexDirection: 'row',
@@ -99,8 +100,12 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         paddingHorizontal: 15
     },
+    numberContainer: {
+        width: 70,
+        height: 85
+    },
     button: {
-        width: 90
+        width: 90,
     },
     input: {
         width: 50,

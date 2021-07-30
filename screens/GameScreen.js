@@ -63,13 +63,13 @@ const GameScreen = props => {
     return (
         <View style={styles.screen}>
             <BodyText>Oponents's guess</BodyText>
-            <NumberContainer>{currentGuess}</NumberContainer>
+            <NumberContainer style={styles.numberContainer}>{currentGuess}</NumberContainer>
             <Card style={styles.buttonContainer}>
                 <MainButton onPress={nextGuessHandler.bind(this, 'lower')}>
-                    <Ionicons name="md-remove" size={24} color="white" />
+                    <Ionicons name="md-remove" size={16} color="white" />
                 </MainButton>
                 <MainButton onPress={nextGuessHandler.bind(this, 'greater')}>
-                    <Ionicons name="md-add" size={24} color="white" />
+                    <Ionicons name="md-add" size={16} color="white" />
                 </MainButton>
             </Card>
             <View style={styles.listContainer}>
@@ -93,12 +93,16 @@ const styles = StyleSheet.create({
         padding: 10,
         alignItems: 'center'
     },
+    numberContainer: {
+        width: 70,
+        height: 85
+    },
     buttonContainer: {
         flexDirection: 'row',
         justifyContent: 'space-around',
         marginTop: 20,
-        width: 400,
-        maxWidth: '90%'
+        width: 300,
+        maxWidth: '80%'
     },
     listContainer: {
         width: '60%',
