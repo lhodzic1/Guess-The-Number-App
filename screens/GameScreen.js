@@ -1,7 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { StyleSheet, View, Text, Button, Alert } from 'react-native';
+import { StyleSheet, View, Text, Alert } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 import BodyText from '../components/BodyText';
+import MainButton from '../components/MainButton';
 import NumberContainer from '../components/NumberContainer';
 import Card from '../components/Card';
 
@@ -31,7 +33,7 @@ const GameScreen = props => {
     }, [currentGuess, userChoice, onGameOver]);
 
     const nextGuessHandler = direction => {
-  
+
         if ((direction === 'lower' && currentGuess < props.userChoice) || (direction === 'greater' && currentGuess > props.userChoice)) {
             Alert.alert("Don\'t lie!", "You know that this is wrong...",
                 [{ text: 'Sorry!', style: 'cancel' }])
@@ -53,8 +55,12 @@ const GameScreen = props => {
             <BodyText>Oponents's guess</BodyText>
             <NumberContainer>{currentGuess}</NumberContainer>
             <Card style={styles.buttonContainer}>
-                <Button title="LOWER" onPress={nextGuessHandler.bind(this, 'lower')}></Button>
-                <Button title="GREATER" onPress={nextGuessHandler.bind(this, 'greater')}></Button>
+                <MainButton onPress={nextGuessHandler.bind(this, 'lower')}>
+                    <Ionicons name="md-remove" size={24} color="white" />
+                </MainButton>
+                <MainButton onPress={nextGuessHandler.bind(this, 'greater')}>
+                    <Ionicons name="md-add" size={24} color="white" />
+                </MainButton>
             </Card>
         </View>
     )
@@ -70,8 +76,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-around',
         marginTop: 20,
-        width: 300,
-        maxWidth: '80%'
+        width: 400,
+        maxWidth: '90%'
     }
 });
 
