@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { StyleSheet, View, Text, Alert, FlatList, ScrollView } from 'react-native';
+import { StyleSheet, View, Text, Alert, FlatList, Dimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 import BodyText from '../components/BodyText';
@@ -31,11 +31,25 @@ const GameScreen = props => {
     const initialGuess = generateRandomBetween(1, 100, props.userChoice);
     const [currentGuess, setCurrentGuess] = useState(initialGuess.toString());
     const [pastGuesses, setPastGuesses] = useState([initialGuess.toString()]);
+    const [availableDeviceWidth, setAvailableDeviceWidth] = useState(Dimensions.get('window').width);
+    const [availableDeviceHeight, setAvailableDeviceHeight] = useState(Dimensions.get('window').height);
     const currentLow = useRef(1);
     const currentHigh = useRef(100);
 
     const { userChoice, onGameOver } = props;
 
+    useEffect(() => {
+        const updateLayout = () => {
+            setAvailableDeviceHeight(Dimensions.get('window').height);
+            setAvailableDeviceWidth(Dimensions.get('window').width);
+        }
+
+        Dimensions.addEventListener('change', updateLayout);
+
+        return () => {
+            Dimensions.removeEventListener('change', updateLayout);
+        };
+    });
     useEffect(() => {
         if (currentGuess === userChoice) {
             onGameOver(pastGuesses.length);
@@ -60,11 +74,40 @@ const GameScreen = props => {
         setPastGuesses(curPastGuesses => [nextNumber.toString(), ...curPastGuesses])
     }
 
+    if (availableDeviceHeight < 500) {
+        return (
+            <View style={styles.screen}>
+                <BodyText>Oponents's guess</BodyText>
+                <View style={styles.controls}>
+                    <MainButton onPress={nextGuessHandler.bind(this, 'lower')}>
+                        <Ionicons name="md-remove" size={16} color="white" />
+                    </MainButton>
+                    <NumberContainer style={styles.numberContainer}>{currentGuess}</NumberContainer>
+                    <MainButton onPress={nextGuessHandler.bind(this, 'greater')}>
+                        <Ionicons name="md-add" size={16} color="white" />
+                    </MainButton>
+                </View>
+
+                <View style={styles.listContainer}>
+                    { /* <ScrollView contentContainerStyle={styles.list}>
+                    {pastGuesses.map((guess, index) => renderListItem(guess, pastGuesses.length - index))}
+                </ScrollView> */ }
+                    <FlatList
+                        data={pastGuesses}
+                        keyExtractor={item => item}
+                        renderItem={renderListItem.bind(this, pastGuesses.length)}
+                        contentContainerStyle={styles.list}
+                    />
+                </View>
+            </View>
+        );
+    }
+
     return (
         <View style={styles.screen}>
             <BodyText>Oponents's guess</BodyText>
             <NumberContainer style={styles.numberContainer}>{currentGuess}</NumberContainer>
-            <Card style={styles.buttonContainer}>
+            <Card style={{...styles.buttonContainer, marginTop: availableDeviceHeight > 600 ? 20 : 10}}>
                 <MainButton onPress={nextGuessHandler.bind(this, 'lower')}>
                     <Ionicons name="md-remove" size={16} color="white" />
                 </MainButton>
@@ -73,10 +116,10 @@ const GameScreen = props => {
                 </MainButton>
             </Card>
             <View style={styles.listContainer}>
-              { /* <ScrollView contentContainerStyle={styles.list}>
+                { /* <ScrollView contentContainerStyle={styles.list}>
                     {pastGuesses.map((guess, index) => renderListItem(guess, pastGuesses.length - index))}
                 </ScrollView> */ }
-                <FlatList 
+                <FlatList
                     data={pastGuesses}
                     keyExtractor={item => item}
                     renderItem={renderListItem.bind(this, pastGuesses.length)}
@@ -100,18 +143,23 @@ const styles = StyleSheet.create({
     buttonContainer: {
         flexDirection: 'row',
         justifyContent: 'space-around',
-        marginTop: 20,
         width: 300,
         maxWidth: '80%'
     },
+    controls: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        width: '80%',
+        alignItems: 'center'
+    },
     listContainer: {
-        width: '60%',
+        width: Dimensions.get('window').width > 350 ? '60%' : '80%',
         flex: 1,
         marginTop: 5
     },
     list: {
         flexGrow: 1,
- //       alignItems: 'center',
+        //       alignItems: 'center',
         justifyContent: 'flex-end'
     },
     listItem: {
